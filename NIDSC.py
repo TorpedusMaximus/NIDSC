@@ -7,15 +7,17 @@ import operator as op
 
 def generateMemory(DRAM):
     for i in range(0, len(DRAM[0])):
-        DRAM[i] = np.random.randint(0, 2, len(DRAM[0]))
-        DRAM[i][reduce(op.xor, [i for i, bit in enumerate(DRAM[i]) if bit])] = not DRAM[i][
-            reduce(op.xor, [i for i, bit in enumerate(DRAM[i]) if bit])]
-    return DRAM.transpose()
+        hammingBlock = np.random.randint(0, 2, len(DRAM[0]))
+        hammingBlock = checkHammingCodes(hammingBlock)
+        DRAM[:, i] = hammingBlock
+    return DRAM
 
 
 def checkHammingCodes(hammingBlock):
     hammingBlock[reduce(op.xor, [i for i, bit in enumerate(hammingBlock) if bit])] = not hammingBlock[
         reduce(op.xor, [i for i, bit in enumerate(hammingBlock) if bit])]
+    if hammingBlock.sum() % 2:
+        hammingBlock[0] = not hammingBlock[0]
     return hammingBlock
 
 
@@ -42,7 +44,7 @@ def rowAccess(DRAM, row):
             if row <= 0:
                 rowHammer(DRAM, row + 1)
             else:
-                rowHammer(DRAM, row + 1)  # zmiana
+                rowHammer(DRAM, row - 1)
 
     return rowData
 
