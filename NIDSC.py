@@ -68,6 +68,7 @@ def main():
     DRAM = np.zeros((howMuchBits, howMuchBits))
     DRAM = generateMemory(DRAM)
 
+
     DRAM = testMemory(DRAM)
     print(DRAM)
 
