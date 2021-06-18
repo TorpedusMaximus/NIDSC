@@ -10,10 +10,13 @@ def generateMemory(DRAM):
         hammingBlock = np.random.randint(0, 2, len(DRAM[0]))
         hammingBlock = checkHammingCodes(hammingBlock)
         DRAM[:, i] = hammingBlock
+    print("Memory checked, errors corrected")
     return DRAM
 
 
 def checkHammingCodes(hammingBlock):
+    if reduce(op.xor, [i for i, bit in enumerate(hammingBlock) if bit]) !=0:
+        print("Problem found in lane:",reduce(op.xor, [i for i, bit in enumerate(hammingBlock) if bit]))
     hammingBlock[reduce(op.xor, [i for i, bit in enumerate(hammingBlock) if bit])] = not hammingBlock[
         reduce(op.xor, [i for i, bit in enumerate(hammingBlock) if bit])]
     if hammingBlock.sum() % 2:
@@ -22,13 +25,9 @@ def checkHammingCodes(hammingBlock):
 
 
 def rowHammer(DRAM, row):
-    print(row)
-    print(DRAM)
     for i in range(0, len(DRAM[row])):
         if randint(1, 2) == 1:
             DRAM[row][i] = not DRAM[row][i]
-    print(DRAM)
-    print("\n")
 
 
 def rowAccess(DRAM, row):
@@ -60,17 +59,19 @@ def testMemory(DRAM):
     for i in range(0, (len(DRAM[0]))):
         hammingBlock = test[:, i]
         test[:, i] = checkHammingCodes(hammingBlock)
+    print("Memory checked, errors corrected")
     return test
 
 
 def main():
     howMuchBits = 16
     DRAM = np.zeros((howMuchBits, howMuchBits))
+    print("Generated memory")
     DRAM = generateMemory(DRAM)
+    for i in range(0,20):
+        DRAM = testMemory(DRAM)
 
 
-    DRAM = testMemory(DRAM)
-    print(DRAM)
 
 
 if __name__ == "__main__":
